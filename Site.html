@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merhaba 😁</title>
+  <style>
+    :root{ --bg:#0f1724; --card:#111827; --accent:#60a5fa; --text:#e6eef8; }
+    body{ margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--text); font-family:system-ui,Segoe UI,Roboto,Arial; }
+    .card{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:28px; border-radius:12px; width:320px; box-shadow: 0 8px 30px rgba(2,6,23,0.6); text-align:center; }
+    input[type="password"]{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text); box-sizing:border-box; margin-bottom:12px; }
+    button{ width:100%; padding:10px 12px; border-radius:8px; border:0; background:var(--accent); color:#05204a; font-weight:600; cursor:pointer; }
+    .msg{ margin-top:12px; font-size:14px; color:#fca5a5; min-height:18px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p>Şifreyi Gir Süprizi Gör 😁</p>
+
+    <input id="pwd" type="password" placeholder="Şifre" autocomplete="off">
+    <button id="goBtn">Gönder</button>
+
+    <div id="message" class="msg"></div>
+  </div>
+
+  <script>
+    // **Hata giderildi: Aynı değişken isimlerinin yeniden tanımlanması engellendi.**
+    // Şifre ve URL çifti 1
+    const PASSWORD_1 = "öykümiçinölümükarşımaalırım";
+    const TARGET_URL_1 = "https://sites.google.com/view/ilk-supriz/ana-sayfa";  
+
+    // Şifre ve URL çifti 2
+    const PASSWORD_2 = "öyküdiyebirisivarkalbimirehinaldı";
+    const TARGET_URL_2 = "https://sites.google.com/view/ikincisupriz/ana-sayfa";
+  
+    function sanitizeRedirect(url){
+      try{
+        const u = new URL(url);
+        // Yalnızca http veya https protokollerine izin ver
+        if(u.protocol === "http:" || u.protocol === "https:") return u.href;
+      }catch(e){}
+      return null;
+    }
+
+    const btn = document.getElementById("goBtn");
+    const pwd = document.getElementById("pwd");
+    const msg = document.getElementById("message");
+
+    btn.addEventListener("click", () => {
+      const val = pwd.value;
+      let targetUrl = null;
+
+      // Hangi şifrenin doğru olduğunu kontrol et
+      if(val === PASSWORD_1){
+        targetUrl = TARGET_URL_1;
+      } else if(val === PASSWORD_2){
+        targetUrl = TARGET_URL_2;
+      }
+
+      if(targetUrl){
+        // Doğru şifre girildi, yönlendirmeye hazırlan
+        const safeUrl = sanitizeRedirect(targetUrl);
+        if(!safeUrl){
+          msg.textContent = "Hedef URL geçersiz.";
+          return;
+        }
+        msg.style.color = "#b7f5c4";
+        msg.textContent = " Yönlendiriliyorsun...";
+        // 600ms (0.6 saniye) sonra yönlendir
+        setTimeout(() => { window.location.href = safeUrl; }, 600);
+      } else {
+        // Hatalı şifre
+        msg.style.color = "#fca5a5";
+        msg.textContent = "Hatalı şifre.";
+      }
+    });
+
+    // Enter tuşu ile gönderme işlemini yap
+    pwd.addEventListener("keydown", e => {
+      if(e.key === "Enter") btn.click();
+    });
+  </script>
+</body>
+</html>
